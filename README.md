@@ -30,12 +30,12 @@ To use the Edit Engineer bot, follow these steps:
     pip install -r requirements.txt
     ```
 
-3. **Configuration**: Open the `bot.py` file and replace `TOKEN` with your Telegram bot token.
+3. **Configuration**: Open the `main.py` file and replace `TOKEN` with your Telegram bot token.
 
 4. **Run Bot**: Run the bot script using Python.
 
     ```bash
-    python bot.py
+    python main.py
     ```
 
 5. **Interact with the Bot**: Start interacting with the bot on Telegram by sending messages with commands or search queries.
