@@ -130,7 +130,6 @@ async def HandleResponse(text: str, update: Update) -> None:
         else:
             await update.message.reply_text("❌ Please Check the Movie or Software that you are searching for..?")
     else:
-        print("Failed to fetch torrents. Status code:", response.status_code)
         await update.message.reply_text("❌ Sorry, I'm unable to process your request at the moment. Please try again later.")
 
 
@@ -141,19 +140,15 @@ async def HandleResponse(text: str, update: Update) -> None:
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type = update.message.chat.type
     text = update.message.text
-    print(f'User ({update.message.chat.id}) in {message_type}: {text}')
     await HandleResponse(text, update)
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(f"Update {update} caused error {context.error}")
 
 if __name__ == "__main__":
-    print("🤖 Bot started!...")
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("custom", custom_command))
     app.add_handler(MessageHandler(filters.Text(), message_handler))  
     app.add_error_handler(error)
-    print("🔄 Bot Pooling!...")
     app.run_polling()
