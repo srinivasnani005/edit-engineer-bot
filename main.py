@@ -148,10 +148,10 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     id=update.message.chat.id
     text = update.message.text
     print(f'User ({update.message.chat.id}) in {message_type}: {text}')
-    if id == 6253573746:
-        await HandleResponse(text, update)
-    else:
-        await update.message.reply_text("Sorry, ❌ You don't have access to this bot.")
+    # if id == 6253573746:
+    await HandleResponse(text, update)
+    # else:
+    # await update.message.reply_text("Sorry, ❌ You don't have access to this bot.")
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"Update {update} caused error {context.error}")
