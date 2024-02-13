@@ -1,11 +1,17 @@
 from typing import Final
 from telegram import Update
+from flask import Flask, request
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 TOKEN: Final = "6359958863:AAHvGLbCozZzI0PlASC-NtqxFkZurgNM-Yc"
 bot_username: Final = "@EditEngineerBot"
+
+
+app = Flask(__name__)
+
+
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Welcome to the Edit Engineer bot! I can help you search for movies and software torrents. Type '/help' for more information.")
@@ -25,6 +31,7 @@ async def HandleResponse(text: str, update: Update) -> None:
     responses = {
         'hello': "👋 Hey there, how can I assist you today?",
         'hi': "👋 Hi there! How can I help you?",
+        'hlo': "👋 Hi there! How can I help you?",
         'how are you': "😊 I'm doing well, thank you for asking! How can I help you?",
         'i love you': "❤️ Aww, that's so sweet! I'm here to assist you with anything you need!",
         'tell me a movie': "🎬 Sure! Just type the name of the movie you want to search for and I'll provide you with the magnet links!",
@@ -130,25 +137,43 @@ async def HandleResponse(text: str, update: Update) -> None:
         else:
             await update.message.reply_text("❌ Please Check the Movie or Software that you are searching for..?")
     else:
+        print("Failed to fetch torrents. Status code:", response.status_code)
         await update.message.reply_text("❌ Sorry, I'm unable to process your request at the moment. Please try again later.")
-
-
 
 
 
 
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type = update.message.chat.type
+    id=update.message.chat.id
     text = update.message.text
-    await HandleResponse(text, update)
+    print(f'User ({update.message.chat.id}) in {message_type}: {text}')
+    if id == 6253573746:
+        await HandleResponse(text, update)
+    else:
+        await update.message.reply_text("Sorry, ❌ You don't have access to this bot.")
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(f"Update {update} caused error {context.error}")
+
+
+
+@app.route(f'/{TOKEN}', methods=['POST'])
+async def webhook_handler():
+    update = Update.de_json(request.json, bot)
+    await message_handler(update, None)
+    return "ok"
+
 
 if __name__ == "__main__":
+    print("🤖 Bot started!...")
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("custom", custom_command))
     app.add_handler(MessageHandler(filters.Text(), message_handler))  
     app.add_error_handler(error)
+    print("🔄 Bot Pooling!...")
     app.run_polling()
+    
+    
